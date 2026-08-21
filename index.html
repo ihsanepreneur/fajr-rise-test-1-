@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#101A32">
+<title>Fajr Rise — Before the world wakes</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600&family=Manrope:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --night: #101A32; --night-2:#1B2A4E; --dawn:#C97A5B; --dawn-soft:#E3A278;
+    --moon:#F4EFE3; --slate:#8E9AB8; --gold:#C9A15C; --line:rgba(244,239,227,0.12);
+  }
+  *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{ font-family:'Manrope', sans-serif; color:var(--moon);
+    background: linear-gradient(180deg, var(--night) 0%, var(--night-2) 55%, #24345C 100%);
+    min-height:100vh; overflow-x:hidden; -webkit-text-size-adjust:100%; }
+  .wrap{ max-width:760px; margin:0 auto; padding:40px 20px 90px; }
+  @media (min-width:640px){ .wrap{ padding:56px 24px 90px; } }
+  .eyebrow{ font-family:'IBM Plex Mono', monospace; font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--slate); display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:20px; }
+  .eyebrow .dot-label{ display:flex; align-items:center; gap:10px; }
+  .eyebrow .dot-label::before{ content:""; width:6px;height:6px;border-radius:50%; background:var(--dawn-soft); box-shadow:0 0 8px var(--dawn-soft); }
+  h1{ font-family:'Fraunces', serif; font-weight:500; font-size:clamp(30px, 8vw, 54px); line-height:1.1;
+    letter-spacing:-0.01em; max-width:11ch;
+    background: linear-gradient(100deg, var(--moon) 30%, var(--dawn-soft) 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .sub{ margin-top:14px; color:var(--slate); font-size:15px; max-width:46ch; }
+  .card{ border:1px solid var(--line); border-radius:16px; padding:22px;
+    background: linear-gradient(160deg, rgba(255,255,255,0.035), rgba(255,255,255,0.01)); }
+  @media (min-width:640px){ .card{ padding:28px; border-radius:18px; } }
+  .countdown-card{ margin-top:36px; padding:26px 20px; }
+  @media (min-width:640px){ .countdown-card{ margin-top:44px; padding:36px 28px; } }
+  .cd-label{ font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--slate); margin-bottom:10px; }
+  .cd-digits{ font-family:'IBM Plex Mono', monospace; font-weight:500; font-size:clamp(36px, 12vw, 68px); color:var(--moon); font-variant-numeric: tabular-nums; }
+  .cd-digits span.unit{ font-size:0.32em; color:var(--slate); letter-spacing:0.06em; margin:0 2px 0 6px; }
+  .cd-time{ margin-top:8px; color:var(--dawn-soft); font-size:13px; font-family:'IBM Plex Mono', monospace; }
+  .stat-row{ display:flex; gap:20px; margin-top:16px; flex-wrap:wrap; }
+  .stat{ font-size:12px; color:var(--slate); }
+  .stat b{ display:block; color:var(--moon); font-family:'IBM Plex Mono', monospace; font-size:14px; margin-top:2px; }
+  .help-text{ font-size:12px; color:var(--slate); margin-top:6px; line-height:1.5; }
+  .setup-note{ font-size:13px; color:var(--slate); margin-top:20px; margin-bottom:10px; }
+  .loc-row{ margin-top:10px; display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  button, input[type="text"], input[type="number"], select{ font-family:'Manrope', sans-serif; font-size:16px; }
+  .btn{ border:1px solid var(--line); background: rgba(244,239,227,0.06); color:var(--moon);
+    padding:13px 18px; border-radius:10px; cursor:pointer; font-weight:600;
+    transition: background .2s ease, border-color .2s ease, transform .15s ease; min-height:46px; }
+  .btn:hover{ background: rgba(244,239,227,0.11); border-color: rgba(244,239,227,0.25); }
+  .btn:active{ transform: scale(0.98); }
+  .btn.primary{ background: linear-gradient(100deg, var(--dawn), var(--gold)); color:#20140C; border:none; }
+  .btn.primary:hover{ filter:brightness(1.06); }
+  .btn.small{ padding:8px 14px; font-size:13px; min-height:auto; }
+  .btn:disabled{ opacity:.45; cursor:default; }
+  .btn:focus-visible, input:focus-visible, select:focus-visible{ outline: 2px solid var(--dawn-soft); outline-offset: 2px; }
+  input[type="text"], input[type="number"], select{ flex:1; min-width:140px; background: rgba(244,239,227,0.05); border:1px solid var(--line);
+    color:var(--moon); padding:13px 14px; border-radius:10px; }
+  input::placeholder{ color: rgba(142,154,184,0.7); }
+  .status{ margin-top:10px; font-size:13px; color:var(--slate); min-height:18px; }
+  .section-label{ font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--slate); margin:44px 0 16px; }
+  @media (min-width:640px){ .section-label{ margin:56px 0 18px; } }
+  .streak-card{ display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; }
+  .streak-count{ font-family:'Fraunces', serif; font-weight:500; font-size:38px; color:var(--moon); }
+  .streak-count small{ font-family:'Manrope', sans-serif; font-size:13px; color:var(--slate); font-weight:600; display:block; margin-top:2px; }
+  .days{ display:flex; gap:6px; }
+  .day{ width:30px;height:30px; border-radius:8px; border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center; font-family:'IBM Plex Mono', monospace;
+    font-size:10px; color:var(--slate); background: rgba(244,239,227,0.03); transition: all .25s ease; }
+  @media (min-width:480px){ .day{ width:34px;height:34px; font-size:11px; } }
+  .day.filled{ background: linear-gradient(140deg, var(--dawn), var(--gold)); color:#20140C; border-color:transparent; font-weight:600; }
+  .day.today{ border-color: var(--dawn-soft); }
+  .log-btn-row{ width:100%; display:flex; gap:10px; flex-wrap:wrap; }
+  .log-btn-row .btn{ flex:1; min-width:140px; }
+  .lifetime-row{ display:flex; gap:24px; margin-top:16px; flex-wrap:wrap; }
+  .lifetime-row .stat b{ font-size:16px; }
+  .milestone-card{ margin-top:16px; }
+  .milestone-top{ display:flex; justify-content:space-between; font-size:13px; color:var(--slate); margin-bottom:10px; }
+  .milestone-top b{ color:var(--moon); }
+  .bar-track{ height:8px; border-radius:999px; background:rgba(244,239,227,0.08); overflow:hidden; }
+  .bar-fill{ height:100%; background:linear-gradient(90deg, var(--dawn), var(--gold)); border-radius:999px; transition:width .5s ease; }
+  .month-card{ margin-top:16px; }
+  .month-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+  .month-head span{ font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--slate); }
+  .month-grid{ display:grid; grid-template-columns:repeat(7, 1fr); gap:5px; }
+  .mcell{ aspect-ratio:1; border-radius:6px; border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center; font-size:10px; color:var(--slate);
+    font-family:'IBM Plex Mono', monospace; background:rgba(244,239,227,0.02); }
+  .mcell.filled{ background: linear-gradient(140deg, var(--dawn), var(--gold)); color:#20140C; font-weight:700; border-color:transparent; }
+  .mcell.today{ border-color:var(--dawn-soft); color:var(--moon); }
+  .mcell.future{ opacity:.28; }
+  .mcell.blank{ border:none; background:none; }
+  .why-card textarea{ width:100%; min-height:70px; resize:vertical; background: rgba(244,239,227,0.05);
+    border:1px solid var(--line); color:var(--moon); border-radius:10px; padding:12px 14px;
+    font-family:'Manrope', sans-serif; font-size:16px; }
+  .why-display{ font-family:'Fraunces', serif; font-style:italic; font-size:17px; line-height:1.5; color:var(--moon); }
+  .toggle{ display:flex; align-items:flex-start; gap:10px; font-size:13px; color:var(--moon); margin-top:14px; }
+  .toggle input{ width:18px; height:18px; accent-color: var(--dawn-soft); margin-top:2px; flex-shrink:0; }
+  .toggle .tlabel{ font-weight:600; }
+  .toggle .thelp{ display:block; color:var(--slate); font-weight:400; margin-top:2px; }
+  .reminder{ margin-top:48px; border-left:2px solid var(--gold); padding-left:18px; }
+  .reminder p{ font-family:'Fraunces', serif; font-style:italic; font-weight:400; font-size:17px; line-height:1.5; color: var(--moon); max-width:50ch; }
+  footer{ margin-top:56px; color:var(--slate); font-size:12px; font-family:'IBM Plex Mono', monospace; }
+  .grid2{ display:grid; grid-template-columns:1fr; gap:16px; margin-top:44px; }
+  @media (min-width:640px){ .grid2{ grid-template-columns:1fr 1fr; margin-top:56px; } }
+  .premium-card{ margin-top:16px; position:relative; }
+  .premium-badge{ font-family:'IBM Plex Mono', monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase;
+    color:#20140C; background:linear-gradient(100deg, var(--dawn), var(--gold)); padding:3px 9px; border-radius:999px; display:inline-block; margin-bottom:14px; }
+  .locked-list{ list-style:none; margin-top:10px; }
+  .locked-list li{ font-size:14px; color:var(--slate); padding:6px 0; display:flex; gap:8px; }
+  .unlock-row{ margin-top:16px; display:flex; gap:10px; flex-wrap:wrap; }
+  .premium-tools{ display:none; margin-top:8px; }
+  .premium-tools.show{ display:block; }
+  .locked-list.hide{ display:none; }
+  .tool-row{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
+  .install-banner{ display:none; margin-top:36px; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+  .install-banner.show{ display:flex; }
+  .install-banner p{ font-size:13px; color:var(--slate); max-width:40ch; }
+  .print-only{ display:none; }
+  @media print{
+    body *{ visibility:hidden; }
+    .print-only, .print-only *{ visibility:visible; }
+    .print-only{ display:block; position:absolute; top:0; left:0; width:100%; padding:24px; color:#111; background:#fff; }
+    .print-only h2{ font-family:'Fraunces', serif; font-size:26px; margin-bottom:4px; }
+    .print-only p{ color:#555; margin-bottom:20px; font-size:13px; }
+    .pgrid{ display:grid; grid-template-columns:repeat(7,1fr); gap:8px; }
+    .pcell{ border:1px solid #ccc; border-radius:6px; aspect-ratio:1; display:flex; align-items:flex-start; justify-content:flex-start; padding:6px; font-size:12px; color:#333; }
+  }
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="eyebrow">
+    <span class="dot-label">Fajr Rise</span>
+    <span id="offlineBadge" style="display:none;">⚡ offline mode</span>
+  </div>
+  <h1>Before the world wakes.</h1>
+  <p class="sub">A quiet companion for the hardest prayer to keep — calculated on your own device, works offline, remembers your streak.</p>
+
+  <div class="card countdown-card">
+    <div class="cd-label">Time until Fajr</div>
+    <div class="cd-digits" id="cdDigits">--<span class="unit">h</span>--<span class="unit">m</span>--<span class="unit">s</span></div>
+    <div class="cd-time" id="cdTime">Set your location to begin</div>
+    <div class="stat-row"><div class="stat">Suggested bedtime<b id="bedtimeVal">—</b></div></div>
+
+    <div class="setup-note" id="setupNote">Pick a way to set your location — calculated entirely on this device, no external service.</div>
+    <div class="loc-row">
+      <button class="btn primary" id="btnLocate">📍 Use my location</button>
+      <select id="cityPreset"><option value="">Or choose a city…</option></select>
+    </div>
+    <div class="loc-row">
+      <input type="number" id="latInput" placeholder="Latitude" step="0.0001">
+      <input type="number" id="lonInput" placeholder="Longitude" step="0.0001">
+      <button class="btn" id="btnCoords">Set</button>
+    </div>
+    <div class="loc-row">
+      <label style="font-size:13px; color:var(--slate);">Angle:</label>
+      <select id="angleSelect">
+        <option value="18">Standard (18°)</option>
+        <option value="15">15° (ISNA)</option>
+        <option value="18.5">18.5° (Umm al-Qura approx.)</option>
+        <option value="19.5">19.5° (Egyptian)</option>
+      </select>
+    </div>
+    <p class="help-text">Fajr time is calculated on your device from your coordinates and date using standard solar-angle astronomy — no internet connection or paid API required once your location is set.</p>
+    <div class="loc-row" id="manualRow" style="display:none;">
+      <input type="text" id="manualTime" placeholder="e.g. 5:12 AM">
+      <button class="btn" id="btnManual">Set</button>
+    </div>
+    <div class="loc-row">
+      <button class="btn small" id="btnManualToggle">Or type the time by hand</button>
+    </div>
+    <div class="status" id="status"></div>
+
+    <label class="toggle">
+      <input type="checkbox" id="chkRemind">
+      <span><span class="tlabel">Remind me before Fajr</span><span class="thelp">Chime + notification while this app/tab is open or recently backgrounded. See the note under Premium for what "closed app" reminders can and can't do.</span></span>
+    </label>
+    <div class="loc-row" style="margin-top:8px;">
+      <input type="number" id="remindMinutes" min="1" max="120" value="20" style="max-width:100px;">
+      <span style="font-size:13px; color:var(--slate); align-self:center;">minutes before Fajr</span>
+    </div>
+  </div>
+
+  <div class="section-label">This week</div>
+  <div class="card streak-card">
+    <div class="streak-count" id="streakCount">0<small>day streak</small></div>
+    <div class="days" id="daysRow"></div>
+    <div class="log-btn-row"><button class="btn primary" id="btnLog">I prayed Fajr today</button></div>
+    <div class="lifetime-row">
+      <div class="stat">Total logged<b id="totalDays">0</b></div>
+      <div class="stat">Longest streak<b id="longestStreak">0</b></div>
+    </div>
+  </div>
+
+  <div class="card milestone-card">
+    <div class="milestone-top"><span>Next milestone</span><b id="milestoneLabel">7 days</b></div>
+    <div class="bar-track"><div class="bar-fill" id="milestoneBar" style="width:0%"></div></div>
+  </div>
+
+  <div class="grid2">
+    <div class="card month-card">
+      <div class="month-head"><span id="monthName">This month</span></div>
+      <div class="month-grid" id="monthGrid"></div>
+    </div>
+    <div class="card why-card">
+      <div class="cd-label">Your reason</div>
+      <div id="whyDisplay" class="why-display" style="display:none; margin-bottom:12px;"></div>
+      <textarea id="whyInput" placeholder="Why are you doing this? Write it once — it'll greet you every morning."></textarea>
+      <div class="loc-row" style="margin-top:12px;"><button class="btn primary" id="btnSaveWhy">Save</button></div>
+    </div>
+  </div>
+
+  <div class="section-label">Premium</div>
+  <div class="card premium-card">
+    <span class="premium-badge">Unlock with your purchase code</span>
+    <ul class="locked-list" id="lockedList">
+      <li>🔒 Spoken voice reminder — hears your "why" note aloud before Fajr</li>
+      <li>🔒 Export your prayer log as a spreadsheet (CSV)</li>
+      <li>🔒 Printable 30-day paper checklist</li>
+    </ul>
+    <div class="unlock-row" id="unlockRow">
+      <input type="text" id="unlockInput" placeholder="Enter your unlock code">
+      <button class="btn primary" id="btnUnlock">Unlock</button>
+    </div>
+    <div class="status" id="unlockStatus"></div>
+
+    <div class="premium-tools" id="premiumTools">
+      <label class="toggle">
+        <input type="checkbox" id="chkVoice">
+        <span><span class="tlabel">Spoken reminder</span><span class="thelp">Your device reads your "why" note aloud shortly before Fajr, using its own built-in voice — alongside the chime.</span></span>
+      </label>
+      <div class="tool-row">
+        <button class="btn small" id="btnTestVoice">🔊 Test voice now</button>
+        <button class="btn" id="btnExportCsv">⬇ Export log as spreadsheet</button>
+        <button class="btn" id="btnPrint">🖨 Print this month's checklist</button>
+      </div>
+      <p class="help-text" style="margin-top:16px;">Honest limitation: reminders (chime, voice, or notification) can only fire while this app is open, minimized, or very recently backgrounded on your phone. Phones aggressively stop background browser tabs to save battery, and iOS Safari is stricter about this than Android. There is no free way to guarantee an alert wakes your phone hours later while the app is fully closed — that reliably needs either push notifications from a paid server, or a native app with OS-level alarm access. For now, the most dependable habit is keeping the app open (screen can be off) overnight, or using your phone's own alarm as a backup alongside this.</p>
+    </div>
+  </div>
+
+  <div class="install-banner card" id="installBanner">
+    <p>Install Fajr Rise on your home screen — opens full-screen like an app, works offline.</p>
+    <button class="btn primary" id="btnInstall">Install</button>
+  </div>
+  <p class="help-text" id="iosInstallNote" style="display:none; margin-top:10px;">On iPhone: tap the Share icon in Safari, then "Add to Home Screen."</p>
+
+  <div class="reminder"><p id="quote">Discipline before dawn is a quiet kind of strength — nobody sees it, but it shapes everything after.</p></div>
+  <footer>fajr rise · built for the people who keep trying</footer>
+</div>
+
+<div class="print-only" id="printArea">
+  <h2>Fajr Checklist</h2>
+  <p id="printMonthLabel"></p>
+  <div class="pgrid" id="printGrid"></div>
+</div>
+
+<script>
+  // ============ storage ============
+  let memoryStore = {};
+  function storageGet(key){ try{ return localStorage.getItem(key); }catch(e){ return memoryStore[key] ?? null; } }
+  function storageSet(key, val){ try{ localStorage.setItem(key, val); }catch(e){ memoryStore[key] = val; } }
+  function isoDate(d){ return d.toISOString().slice(0,10); }
+
+  // ============ PWA: service worker + install ============
+  let deferredInstallPrompt = null;
+  if('serviceWorker' in navigator){
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('service-worker.js').catch(()=>{});
+    });
+  }
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    document.getElementById('installBanner').classList.add('show');
+  });
+  document.getElementById('btnInstall').addEventListener('click', async () => {
+    if(!deferredInstallPrompt) return;
+    deferredInstallPrompt.prompt();
+    await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt = null;
+    document.getElementById('installBanner').classList.remove('show');
+  });
+  // iOS doesn't support beforeinstallprompt — show manual instructions instead
+  (function iosCheck(){
+    const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    const isStandalone = window.navigator.standalone === true;
+    if(isIOS && !isStandalone){ document.getElementById('iosInstallNote').style.display = 'block'; }
+  })();
+  window.addEventListener('online', () => document.getElementById('offlineBadge').style.display = 'none');
+  window.addEventListener('offline', () => document.getElementById('offlineBadge').style.display = 'inline');
+  if(!navigator.onLine) document.getElementById('offlineBadge').style.display = 'inline';
+
+  // ============ client-side Fajr time calculation (no API) ============
+  // Standard solar-position astronomy (NOAA-style equations, public domain math).
+  // Given latitude/longitude/date/depression-angle, returns Fajr as an absolute
+  // JS Date (epoch-based, so it renders correctly in the device's local time
+  // regardless of timezone).
+  function toRad(d){ return d * Math.PI / 180; }
+  function toDeg(r){ return r * 180 / Math.PI; }
+
+  function julianDay(y, m, d){
+    if(m <= 2){ y -= 1; m += 12; }
+    const A = Math.floor(y/100);
+    const B = 2 - A + Math.floor(A/4);
+    return Math.floor(365.25*(y+4716)) + Math.floor(30.6001*(m+1)) + d + B - 1524.5;
+  }
+
+  function sunPosition(jd){
+    const T = (jd - 2451545.0) / 36525;
+    const L0 = (280.46646 + T*(36000.76983 + T*0.0003032)) % 360;
+    const M = 357.52911 + T*(35999.05029 - 0.0001537*T);
+    const e = 0.016708634 - T*(0.000042037 + 0.0000001267*T);
+    const Mrad = toRad(M);
+    const C = Math.sin(Mrad)*(1.914602 - T*(0.004817+0.000014*T))
+            + Math.sin(2*Mrad)*(0.019993 - 0.000101*T)
+            + Math.sin(3*Mrad)*0.000289;
+    const trueLong = L0 + C;
+    const omega = 125.04 - 1934.136*T;
+    const lambda = trueLong - 0.00569 - 0.00478*Math.sin(toRad(omega));
+    const epsilon0 = 23 + (26 + (21.448 - T*(46.815+T*(0.00059-T*0.001813)))/60)/60;
+    const epsilon = epsilon0 + 0.00256*Math.cos(toRad(omega));
+    const declination = Math.asin(Math.sin(toRad(epsilon))*Math.sin(toRad(lambda)));
+    const y = Math.pow(Math.tan(toRad(epsilon/2)), 2);
+    const eqTime = 4*toDeg(
+      y*Math.sin(2*toRad(L0)) - 2*e*Math.sin(Mrad)
+      + 4*e*y*Math.sin(Mrad)*Math.cos(2*toRad(L0))
+      - 0.5*y*y*Math.sin(4*toRad(L0)) - 1.25*e*e*Math.sin(2*Mrad)
+    );
+    return { declination, eqTime }; // declination in radians, eqTime in minutes
+  }
+
+  // returns a Date (UTC-correct epoch) for Fajr on the given local calendar date
+  function computeFajrDate(baseDate, lat, lon, angleDeg){
+    const y = baseDate.getFullYear(), m = baseDate.getMonth()+1, d = baseDate.getDate();
+    const jd = julianDay(y, m, d);
+    const { declination, eqTime } = sunPosition(jd);
+    const latRad = toRad(lat);
+    const cosHA = (Math.sin(toRad(-angleDeg)) - Math.sin(latRad)*Math.sin(declination))
+                / (Math.cos(latRad)*Math.cos(declination));
+    if(cosHA > 1 || cosHA < -1) return null; // sun never reaches this angle (extreme latitudes)
+    const HA = toDeg(Math.acos(cosHA));
+    const solarNoonUTCmin = 720 - 4*lon - eqTime;
+    const fajrUTCmin = solarNoonUTCmin - 4*HA;
+    const utcMidnight = Date.UTC(y, m-1, d);
+    return new Date(utcMidnight + fajrUTCmin*60000);
+  }
+
+  // small built-in list — no geocoding API needed
+  const CITY_PRESETS = [
+    ["Algiers, Algeria", 36.7538, 3.0588], ["Cairo, Egypt", 30.0444, 31.2357],
+    ["Istanbul, Turkey", 41.0082, 28.9784], ["Riyadh, Saudi Arabia", 24.7136, 46.6753],
+    ["Mecca, Saudi Arabia", 21.3891, 39.8579], ["Dubai, UAE", 25.2048, 55.2708],
+    ["Karachi, Pakistan", 24.8607, 67.0011], ["Lahore, Pakistan", 31.5497, 74.3436],
+    ["Dhaka, Bangladesh", 23.8103, 90.4125], ["Delhi, India", 28.6139, 77.2090],
+    ["Mumbai, India", 19.0760, 72.8777], ["Chennai, India", 13.0827, 80.2707],
+    ["Hyderabad, India", 17.3850, 78.4867], ["Jakarta, Indonesia", -6.2088, 106.8456],
+    ["Kuala Lumpur, Malaysia", 3.1390, 101.6869], ["London, UK", 51.5072, -0.1276],
+    ["Paris, France", 48.8566, 2.3522], ["Berlin, Germany", 52.5200, 13.4050],
+    ["New York, USA", 40.7128, -74.0060], ["Chicago, USA", 41.8781, -87.6298],
+    ["Houston, USA", 29.7604, -95.3698], ["Toronto, Canada", 43.6532, -79.3832],
+    ["Sydney, Australia", -33.8688, 151.2093], ["Lagos, Nigeria", 6.5244, 3.3792],
+    ["Nairobi, Kenya", -1.2921, 36.8219], ["Johannesburg, South Africa", -26.2041, 28.0473],
+    ["Rabat, Morocco", 34.0209, -6.8416], ["Tunis, Tunisia", 36.8065, 10.1815],
+    ["Amman, Jordan", 31.9454, 35.9284], ["Baghdad, Iraq", 33.3152, 44.3661]
+  ];
+  const presetSelect = document.getElementById('cityPreset');
+  CITY_PRESETS.forEach(([name, lat, lon]) => {
+    const opt = document.createElement('option');
+    opt.value = `${lat},${lon}`; opt.textContent = name;
+    presetSelect.appendChild(opt);
+  });
+  presetSelect.addEventListener('change', () => {
+    if(!presetSelect.value) return;
+    const [lat, lon] = presetSelect.value.split(',').map(Number);
+    document.getElementById('latInput').value = lat;
+    document.getElementById('lonInput').value = lon;
+    applyCoords(lat, lon, presetSelect.selectedOptions[0].textContent);
+  });
+
+  // ============ countdown state ============
+  let fajrTime = null, currentLat = null, currentLon = null;
+  const cdDigits = document.getElementById('cdDigits');
+  const cdTime = document.getElementById('cdTime');
+  const statusEl = document.getElementById('status');
+  const bedtimeVal = document.getElementById('bedtimeVal');
+  let reminderTimeoutId = null, voiceTimeoutId = null;
+
+  function currentAngle(){ return parseFloat(document.getElementById('angleSelect').value); }
+
+  function recomputeFajr(){
+    if(currentLat === null || currentLon === null) return;
+    const now = new Date();
+    let f = computeFajrDate(now, currentLat, currentLon, currentAngle());
+    if(!f || f.getTime() < now.getTime()){
+      const tomorrow = new Date(now); tomorrow.setDate(now.getDate()+1);
+      f = computeFajrDate(tomorrow, currentLat, currentLon, currentAngle());
+    }
+    if(!f){ statusEl.textContent = "Couldn't calculate a Fajr time for this latitude on this date (can happen near the poles)."; return; }
+    fajrTime = f;
+    cdTime.textContent = 'Fajr at ' + f.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    updateBedtime();
+    scheduleReminders();
+  }
+
+  function applyCoords(lat, lon, label){
+    currentLat = lat; currentLon = lon;
+    storageSet('fajrrise_lat', lat); storageSet('fajrrise_lon', lon);
+    recomputeFajr();
+    statusEl.textContent = label ? ('Fajr time set for ' + label + '.') : 'Fajr time set for your coordinates.';
+    document.getElementById('setupNote').textContent = (label || (lat.toFixed(2)+', '+lon.toFixed(2))) + ' — calculated on this device.';
+  }
+
+  document.getElementById('angleSelect').addEventListener('change', recomputeFajr);
+
+  document.getElementById('btnCoords').addEventListener('click', () => {
+    const lat = parseFloat(document.getElementById('latInput').value);
+    const lon = parseFloat(document.getElementById('lonInput').value);
+    if(isNaN(lat) || isNaN(lon)){ statusEl.textContent = 'Enter both latitude and longitude.'; return; }
+    applyCoords(lat, lon, null);
+  });
+
+  document.getElementById('btnLocate').addEventListener('click', () => {
+    if(!navigator.geolocation){ statusEl.textContent = "Location isn't available here — pick a city or enter coordinates."; return; }
+    statusEl.textContent = 'Requesting location permission…';
+    navigator.geolocation.getCurrentPosition((pos) => {
+      const { latitude, longitude } = pos.coords;
+      document.getElementById('latInput').value = latitude.toFixed(4);
+      document.getElementById('lonInput').value = longitude.toFixed(4);
+      applyCoords(latitude, longitude, null);
+    }, () => { statusEl.textContent = 'No permission popup appeared, or it was denied — pick a city or enter coordinates instead.'; }, {timeout:6000});
+  });
+
+  function updateBedtime(){
+    if(!fajrTime) return;
+    const bedtime = new Date(fajrTime.getTime() - 7.5*3600000);
+    bedtimeVal.textContent = bedtime.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+  }
+
+  function chime(){
+    try{
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const o = ctx.createOscillator(); const g = ctx.createGain();
+      o.type = 'sine'; o.frequency.value = 660;
+      g.gain.setValueAtTime(0.0001, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.15, ctx.currentTime + 0.05);
+      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 1.2);
+      o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime + 1.3);
+    }catch(e){}
+  }
+
+  function reminderLine(){
+    const why = storageGet('fajrrise_why');
+    return why ? ('A reminder, in your own words: ' + why) : "Fajr is approaching. This is your quiet moment before the day begins.";
+  }
+  function speakReminder(){
+    try{
+      if(!('speechSynthesis' in window)) return;
+      const utter = new SpeechSynthesisUtterance(reminderLine());
+      utter.rate = 0.92;
+      window.speechSynthesis.speak(utter);
+    }catch(e){}
+  }
+  document.getElementById('btnTestVoice').addEventListener('click', speakReminder);
+
+  function notify(title, body){
+    if(navigator.serviceWorker && navigator.serviceWorker.controller){
+      navigator.serviceWorker.controller.postMessage({ type: 'SHOW_NOTIFICATION', title, body });
+    } else if('Notification' in window && Notification.permission === 'granted'){
+      new Notification(title, { body });
+    }
+  }
+
+  function scheduleReminders(){
+    if(reminderTimeoutId) clearTimeout(reminderTimeoutId);
+    if(voiceTimeoutId) clearTimeout(voiceTimeoutId);
+    if(!fajrTime) return;
+    const mins = parseInt(document.getElementById('remindMinutes').value, 10) || 20;
+    const target = fajrTime.getTime() - mins*60000;
+    const delay = target - Date.now();
+    if(delay <= 0) return;
+    if(document.getElementById('chkRemind').checked){
+      reminderTimeoutId = setTimeout(() => {
+        chime();
+        notify('Fajr is in ' + mins + ' minutes', 'Time to get ready.');
+      }, delay);
+    }
+    const chkVoice = document.getElementById('chkVoice');
+    if(chkVoice && chkVoice.checked){
+      voiceTimeoutId = setTimeout(speakReminder, delay);
+    }
+  }
+  document.getElementById('chkRemind').addEventListener('change', (e) => {
+    if(e.target.checked && 'Notification' in window && Notification.permission === 'default'){
+      Notification.requestPermission().then(() => scheduleReminders());
+    } else { scheduleReminders(); }
+  });
+  document.getElementById('remindMinutes').addEventListener('change', scheduleReminders);
+
+  function parseManualTime(str){
+    const m = str.trim().match(/^(\d{1,2}):(\d{2})\s*(am|pm)?$/i);
+    if(!m) return null;
+    let hh = parseInt(m[1],10); const mm = parseInt(m[2],10);
+    const ap = m[3] ? m[3].toLowerCase() : null;
+    if(ap === 'pm' && hh < 12) hh += 12;
+    if(ap === 'am' && hh === 12) hh = 0;
+    return {hh, mm};
+  }
+  document.getElementById('btnManualToggle').addEventListener('click', () => {
+    const row = document.getElementById('manualRow');
+    row.style.display = row.style.display === 'none' ? 'flex' : 'none';
+  });
+  document.getElementById('btnManual').addEventListener('click', () => {
+    const val = document.getElementById('manualTime').value;
+    const parsed = parseManualTime(val);
+    if(!parsed){ statusEl.textContent = "Couldn't read that — try a format like 5:12 AM"; return; }
+    const now = new Date();
+    let t = new Date(now.getFullYear(), now.getMonth(), now.getDate(), parsed.hh, parsed.mm, 0);
+    if (t.getTime() < now.getTime()) t.setDate(t.getDate() + 1);
+    fajrTime = t;
+    cdTime.textContent = 'Fajr at ' + t.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    updateBedtime(); scheduleReminders();
+    statusEl.textContent = 'Fajr time set manually.';
+  });
+
+  function tick(){
+    if(!fajrTime) return;
+    const now = new Date();
+    let diff = fajrTime.getTime() - now.getTime();
+    if(diff <= 0){ recomputeFajr(); return; }
+    const h = Math.floor(diff / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    const pad = n => String(n).padStart(2,'0');
+    cdDigits.innerHTML = `${pad(h)}<span class="unit">h</span>${pad(m)}<span class="unit">m</span>${pad(s)}<span class="unit">s</span>`;
+  }
+  setInterval(tick, 1000);
+
+  (function restore(){
+    const lat = storageGet('fajrrise_lat'), lon = storageGet('fajrrise_lon');
+    if(lat && lon){
+      document.getElementById('latInput').value = parseFloat(lat).toFixed(4);
+      document.getElementById('lonInput').value = parseFloat(lon).toFixed(4);
+      applyCoords(parseFloat(lat), parseFloat(lon), null);
+    }
+  })();
+
+  // ============ streak + calendar ============
+  function loadLog(){ const raw = storageGet('fajrrise_log'); try{ return new Set(JSON.parse(raw) || []); }catch(e){ return new Set(); } }
+  function saveLog(set){ storageSet('fajrrise_log', JSON.stringify(Array.from(set))); }
+  let logSet = loadLog();
+  const todayISO = isoDate(new Date());
+
+  function computeStreak(set){
+    const today = new Date(); today.setHours(0,0,0,0);
+    let cursor = new Date(today);
+    if(!set.has(isoDate(cursor))){
+      cursor.setDate(cursor.getDate()-1);
+      if(!set.has(isoDate(cursor))) return 0;
+    }
+    let streak = 0;
+    while(set.has(isoDate(cursor))){ streak++; cursor.setDate(cursor.getDate()-1); }
+    return streak;
+  }
+  function computeLongestStreak(set){
+    const dates = Array.from(set).sort();
+    let longest = 0, run = 0, prev = null;
+    for(const iso of dates){
+      const d = new Date(iso);
+      if(prev && (d - prev) === 86400000){ run++; } else { run = 1; }
+      longest = Math.max(longest, run); prev = d;
+    }
+    return longest;
+  }
+  function renderWeek(){
+    const row = document.getElementById('daysRow'); row.innerHTML = '';
+    const labels = ['S','M','T','W','T','F','S'];
+    const today = new Date();
+    const start = new Date(today); start.setDate(today.getDate() - today.getDay());
+    for(let i=0;i<7;i++){
+      const d = new Date(start); d.setDate(start.getDate()+i);
+      const div = document.createElement('div');
+      const iso = isoDate(d);
+      div.className = 'day' + (logSet.has(iso) ? ' filled' : '') + (iso===todayISO ? ' today' : '');
+      div.textContent = labels[i];
+      row.appendChild(div);
+    }
+  }
+  function renderMonth(){
+    const now = new Date();
+    document.getElementById('monthName').textContent = now.toLocaleDateString([], {month:'long', year:'numeric'});
+    const grid = document.getElementById('monthGrid'); grid.innerHTML = '';
+    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+    const daysInMonth = new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
+    const startWeekday = firstDay.getDay();
+    for(let i=0;i<startWeekday;i++){ const b = document.createElement('div'); b.className='mcell blank'; grid.appendChild(b); }
+    for(let day=1; day<=daysInMonth; day++){
+      const d = new Date(now.getFullYear(), now.getMonth(), day);
+      const iso = isoDate(d);
+      const cell = document.createElement('div');
+      let cls = 'mcell';
+      if(logSet.has(iso)) cls += ' filled';
+      if(iso===todayISO) cls += ' today';
+      if(d.getTime() > new Date(todayISO).getTime()) cls += ' future';
+      cell.className = cls; cell.textContent = day;
+      grid.appendChild(cell);
+    }
+  }
+  const milestones = [7, 21, 40, 100];
+  function renderMilestone(streak){
+    let next = milestones.find(m => m > streak) || (streak + 50);
+    const prevMilestone = milestones.filter(m => m <= streak).pop() || 0;
+    const pct = Math.min(100, Math.round(((streak - prevMilestone) / (next - prevMilestone)) * 100));
+    document.getElementById('milestoneLabel').textContent = next + ' days';
+    document.getElementById('milestoneBar').style.width = pct + '%';
+  }
+  function renderStreak(){
+    const streak = computeStreak(logSet);
+    document.getElementById('streakCount').innerHTML = streak + '<small>day streak</small>';
+    document.getElementById('totalDays').textContent = logSet.size;
+    document.getElementById('longestStreak').textContent = computeLongestStreak(logSet);
+    renderMilestone(streak);
+  }
+  function refreshAll(){ renderWeek(); renderMonth(); renderStreak(); }
+  document.getElementById('btnLog').addEventListener('click', () => {
+    if(logSet.has(todayISO)) return;
+    logSet.add(todayISO); saveLog(logSet); refreshAll();
+    document.getElementById('btnLog').disabled = true;
+    document.getElementById('btnLog').textContent = 'Logged for today';
+  });
+  if(logSet.has(todayISO)){
+    document.getElementById('btnLog').disabled = true;
+    document.getElementById('btnLog').textContent = 'Logged for today';
+  }
+
+  // ============ why note ============
+  const whyKey = 'fajrrise_why';
+  const savedWhy = storageGet(whyKey);
+  if(savedWhy){
+    document.getElementById('whyDisplay').style.display = 'block';
+    document.getElementById('whyDisplay').textContent = '"' + savedWhy + '"';
+    document.getElementById('whyInput').value = savedWhy;
+  }
+  document.getElementById('btnSaveWhy').addEventListener('click', () => {
+    const val = document.getElementById('whyInput').value.trim();
+    if(!val) return;
+    storageSet(whyKey, val);
+    document.getElementById('whyDisplay').style.display = 'block';
+    document.getElementById('whyDisplay').textContent = '"' + val + '"';
+  });
+
+  const quotes = [
+    "Discipline before dawn is a quiet kind of strength — nobody sees it, but it shapes everything after.",
+    "The hardest prayer to keep is often the one that means the most.",
+    "One more morning. That's all today asks of you.",
+    "Streaks aren't the point — showing up before the sun is."
+  ];
+  document.getElementById('quote').textContent = quotes[Math.floor(Math.random()*quotes.length)];
+
+  // ============ premium unlock ============
+  const UNLOCK_CODE = 'FAJR40';
+  function showPremium(){
+    document.getElementById('lockedList').classList.add('hide');
+    document.getElementById('unlockRow').style.display = 'none';
+    document.getElementById('premiumTools').classList.add('show');
+  }
+  if(storageGet('fajrrise_unlocked') === 'true'){ showPremium(); }
+  document.getElementById('btnUnlock').addEventListener('click', () => {
+    const code = document.getElementById('unlockInput').value.trim().toUpperCase();
+    if(code === UNLOCK_CODE){
+      storageSet('fajrrise_unlocked', 'true');
+      showPremium();
+      document.getElementById('unlockStatus').textContent = 'Unlocked — thank you.';
+    } else {
+      document.getElementById('unlockStatus').textContent = "That code didn't match. Check your purchase email.";
+    }
+  });
+  document.getElementById('btnExportCsv').addEventListener('click', () => {
+    const rows = ['date,prayed_fajr'];
+    Array.from(logSet).sort().forEach(d => rows.push(d + ',1'));
+    const blob = new Blob([rows.join('\n')], {type:'text/csv'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'fajr-rise-log.csv';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+  document.getElementById('btnPrint').addEventListener('click', () => {
+    const now = new Date();
+    document.getElementById('printMonthLabel').textContent = now.toLocaleDateString([], {month:'long', year:'numeric'}) + ' — tick each box after Fajr';
+    const grid = document.getElementById('printGrid'); grid.innerHTML = '';
+    const daysInMonth = new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
+    for(let day=1; day<=daysInMonth; day++){
+      const cell = document.createElement('div');
+      cell.className = 'pcell';
+      cell.textContent = day;
+      grid.appendChild(cell);
+    }
+    window.print();
+  });
+
+  refreshAll();
+</script>
+</body>
+</html>
